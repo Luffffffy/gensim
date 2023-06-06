@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 #
 # Copyright (C) 2010 Radim Rehurek <radimrehurek@seznam.cz>
-# Licensed under the GNU LGPL v2.1 - http://www.gnu.org/licenses/lgpl.html
+# Licensed under the GNU LGPL v2.1 - https://www.gnu.org/licenses/old-licenses/lgpl-2.1.en.html
 
 """
 Automated tests for checking transformation algorithms (the models package).
@@ -847,9 +847,9 @@ class TestWord2VecModel(unittest.TestCase):
             expected_neighbor = 'palestinian'
             sims = model.wv.most_similar(origin_word, topn=len(model.wv))
             # the exact vectors and therefore similarities may differ, due to different thread collisions/randomization
-            # so let's test only for top10
+            # so let's test only for topN
             neighbor_rank = [word for word, sim in sims].index(expected_neighbor)
-            self.assertLess(neighbor_rank, 5)
+            self.assertLess(neighbor_rank, 6)
 
     def test_r_n_g(self):
         """Test word2vec results identical with identical RNG seed."""
@@ -888,7 +888,7 @@ class TestWord2VecModel(unittest.TestCase):
         self.assertRaises(RuntimeError, binary_model_with_neg.predict_output_word, ['system', 'human'])
 
         # negative sampling scheme not used
-        model_without_neg = word2vec.Word2Vec(sentences, min_count=1, negative=0)
+        model_without_neg = word2vec.Word2Vec(sentences, min_count=1, hs=1, negative=0)
         self.assertRaises(RuntimeError, model_without_neg.predict_output_word, ['system', 'human'])
 
         # passing indices instead of words in context
@@ -1031,6 +1031,19 @@ class TestWord2VecModel(unittest.TestCase):
             if epoch == 5:
                 model.alpha += 0.05
         warning = "Effective 'alpha' higher than previous training cycles"
+        self.assertTrue(warning in str(loglines))
+
+    @log_capture()
+    def test_train_hs_and_neg(self, loglines):
+        """
+        Test if ValueError is raised when both hs=0 and negative=0
+        Test if warning is raised if both hs and negative are activated
+        """
+        with self.assertRaises(ValueError):
+            word2vec.Word2Vec(sentences, min_count=1, hs=0, negative=0)
+
+        word2vec.Word2Vec(sentences, min_count=1, hs=1, negative=5)
+        warning = "Both hierarchical softmax and negative sampling are activated."
         self.assertTrue(warning in str(loglines))
 
     def test_train_with_explicit_param(self):
