@@ -257,10 +257,6 @@ When `citing gensim in academic papers and theses <https://scholar.google.cz/cit
 Gensim is open source software released under the `GNU LGPLv2.1 license <https://www.gnu.org/licenses/old-licenses/lgpl-2.1.en.html>`_.
 Copyright (c) 2009-now Radim Rehurek
 
-|Analytics|_
-
-.. |Analytics| image:: https://ga-beacon.appspot.com/UA-24066335-5/your-repo/page-name
-.. _Analytics: https://github.com/igrigorik/ga-beacon
 .. _Official Documentation and Walkthrough: https://radimrehurek.com/gensim/
 .. _Tutorials: https://github.com/RaRe-Technologies/gensim/blob/develop/tutorials.md#tutorials
 .. _Tutorial Videos: https://github.com/RaRe-Technologies/gensim/blob/develop/tutorials.md#videos
@@ -277,7 +273,6 @@ core_testenv = [
     'pytest',
     'pytest-cov',
     'mock',
-    'cython',
     'testfixtures',
 ]
 
@@ -331,15 +326,6 @@ docs_testenv = core_testenv + distributed_env + visdom_req + [
 ]
 
 NUMPY_STR = 'numpy >= 1.18.5'
-#
-# We pin the Cython version for reproducibility.  We expect our extensions
-# to build with any sane version of Cython, so we should update this pin
-# periodically.
-#
-CYTHON_STR = 'Cython==0.29.32'
-
-# Allow overriding the Cython version requirement
-CYTHON_STR = os.environ.get('GENSIM_CYTHON_REQUIRES', CYTHON_STR)
 
 install_requires = [
     NUMPY_STR,
@@ -347,12 +333,9 @@ install_requires = [
     'smart_open >= 1.8.1',
 ]
 
-if need_cython():
-    install_requires.append(CYTHON_STR)
-
 setup(
     name='gensim',
-    version='4.3.1.dev0',
+    version='4.3.2.dev0',
     description='Python framework for fast Vector Space Modelling',
     long_description=LONG_DESCRIPTION,
 

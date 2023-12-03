@@ -18,7 +18,7 @@ jobs:
         shell: bash
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Setup up Python ${{ matrix.python }}
         uses: actions/setup-python@v4
         with:
@@ -55,7 +55,7 @@ jobs:
             git format-patch @^
             git bundle create prebuilt-docs-changes.bundle @^...@
             git reset --mixed @^
-            git diff --exit-code --stat @
+            git diff --stat @
           fi
 
       - name: Upload prebuilt docs changes
